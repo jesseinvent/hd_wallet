@@ -1,0 +1,22 @@
+{
+  "name": "hd-wallets",
+  "version": "1.0.0",
+  "description": "Implementation of bip39, 32 & 44",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bip32": "^3.0.1",
+    "bip39": "^3.0.4",
+    "bitcoinjs-lib": "^6.0.1",
+    "bs58check": "^2.1.2",
+    "create-hash": "^1.2.0",
+    "ethereumjs-util": "^7.1.5",
+    "ethereumjs-wallet": "^1.0.2",
+    "hdkey": "^2.0.1",
+    "keccak": "^3.0.2"
+  }
+}
