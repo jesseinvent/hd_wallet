@@ -19,8 +19,6 @@ module.exports = (seed) => {
   const path = "m/44'/195'/0'/0/0"; // m / purpose' / coin_type' / account' / change / address_index
   const tronAddressNode = root.derive(path);
 
-  console.log(tronAddressNode);
-
   const publicKey = tronAddressNode.publicKey.toString("hex");
   const privateKey = tronAddressNode.privateKey.toString("hex");
 

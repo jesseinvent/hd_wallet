@@ -2,18 +2,20 @@ const Hdkey = require("hdkey");
 const ethUtil = require("ethereumjs-util");
 
 const generateAddressFromPublicKey = (publicKey) => {
-  const result = ethUtil.pubToAddress(publicKey).toString(hex);
-  //   const address = ethUtil.toChecksumAddress(result);
-  return result;
-};
-
-const generateAddressFromPrivateKey = (privateKey) => {
-  const pubKey = ethUtil.privateToPublic(Buffer.from(privateKey, "hex"));
-  const result = ethUtil.publicToAddress(pubKey).toString("hex");
+  const result = ethUtil
+    .publicToAddress(Buffer.from(publicKey, "hex"), true)
+    .toString("hex");
   const address = ethUtil.toChecksumAddress(`0x${result}`);
-
   return address;
 };
+
+// const generateAddressFromPrivateKey = (privateKey) => {
+//   const pubKey = ethUtil.privateToPublic(Buffer.from(privateKey, "hex"));
+//   const result = ethUtil.publicToAddress(pubKey).toString("hex");
+//   const address = ethUtil.toChecksumAddress(`0x${result}`);
+
+//   return address;
+// };
 
 module.exports = (seed) => {
   // Get node root (bip32)
@@ -26,8 +28,8 @@ module.exports = (seed) => {
   const publicKey = ethAddressNode.publicKey.toString("hex");
   const privateKey = ethAddressNode.privateKey.toString("hex");
 
-  //   const address = generateAddressFromPublicKey(ethAddressNode._publicKey);
-  const address = generateAddressFromPrivateKey(privateKey);
+  const address = generateAddressFromPublicKey(publicKey);
+  // const address = generateAddressFromPrivateKey(privateKey);
 
   console.log(`Public Key: ${publicKey}`);
   console.log(`Address: ${address}`);
