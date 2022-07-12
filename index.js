@@ -1,6 +1,6 @@
 const bip39 = require("bip39");
 const hdKey = require("hdkey");
-const generateBitcoinAddress = require("./generateBitcoinWalletFromSeed");
+const generateBitcoinWallet = require("./generateBitcoinWalletFromSeed");
 const generateEthWalletFromSeed = require("./generateEthWalletFromSeed");
 const generateTronWalletFromSeed = require("./generateTronWalletFromSeed");
 
@@ -10,25 +10,13 @@ const mnemonic = bip39.generateMnemonic();
 console.log(`mnemonic: ${mnemonic}`);
 
 // STEP 2: Convert mnemonic phrase to seed (bip39)
-const seed = bip39.mnemonicToSeedSync(mnemonic);
+const seedPhrase = bip39.mnemonicToSeedSync(mnemonic);
+const seed = seedPhrase.toString("hex");
 
-console.log(`Seed Phrase: ${seed.toString("hex")}`);
-
-// STEP 3: Address generation (bip32)
-// Generate root of node tree
-const root = hdKey.fromMasterSeed(seed);
-
-// Get masterPrivateKey from root
-const masterPrivateKey = root.privateKey.toString("hex");
-const masterPublicKey = root.publicKey.toString("hex");
-
-console.log(`Master Public Key: ${masterPublicKey}`);
-console.log(`Master Private key: ${masterPrivateKey}`);
-
-console.log(" ");
+console.log(`seed: ${seed}`);
 
 console.log("Bitcoin");
-generateBitcoinAddress(seed.toString("hex"));
+generateBitcoinWallet(seed.toString("hex"));
 
 console.log(" ");
 

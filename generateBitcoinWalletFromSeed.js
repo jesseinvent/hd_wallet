@@ -1,7 +1,8 @@
-const Hdkey = require("hdkey");
-const createHash = require("create-hash");
-const bs58Check = require("bs58check");
-const Bitcoin = require("bitcoinjs-lib");
+const generateBTCAddressFromPublicKey = require("./addresses/generateBTCAddressFromPublicKey");
+const ecc = require("tiny-secp256k1");
+const { BIP32Factory } = require("bip32");
+// You must wrap a tiny-secp256k1 compatible implementation
+const bip32 = BIP32Factory(ecc);
 
 // generateAddressFromPublicKey = (publicKey) => {
 //   // Perform SHA-256 Hash on public key
@@ -19,33 +20,21 @@ const Bitcoin = require("bitcoinjs-lib");
 //   return result;
 // };
 
-const generateAddressFromPublicKey = (publicKey) => {
-  const result = Bitcoin.payments.p2pkh({
-    pubkey: Buffer.from(publicKey, "hex"),
-  });
-  return result.address;
-};
-
 module.exports = (seed) => {
   // Get node root (bip32)
-  const root = Hdkey.fromMasterSeed(Buffer.from(seed, "hex"));
-
-  // console.log(root);
+  const root = bip32.fromSeed(Buffer.from(seed, "hex")); // (master key)
 
   // Derive address node
-  const path = "m/44'/0'/0'/0"; // m / purpose' / coin_type' / account' / change / address_index
-  const btcAddressNode = root.derive(path);
+  const path = `m/44'/0'/0'/0/0`; // m / purpose' / coin_type' / account' / change / address_index
+  const account = root.derivePath(path);
 
-  // console.log(btcAddressNode);
-
-  const publicKey = btcAddressNode.publicKey.toString("hex");
-  const privateKey = btcAddressNode.privateKey.toString("hex");
-
-  const address = generateAddressFromPublicKey(publicKey);
+  const publicKey = account.publicKey.toString("hex");
+  const privateKey = account.privateKey.toString("hex");
+  const address = generateBTCAddressFromPublicKey(publicKey);
 
   console.log(`Public Key: ${publicKey}`);
   console.log(`Address: ${address}`);
-  console.log(`PrivateKey: ${privateKey}`);
+  console.log(`Private Key: ${privateKey}`);
 
   return {
     address,

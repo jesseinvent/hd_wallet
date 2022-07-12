@@ -1,35 +1,21 @@
-const Hdkey = require("hdkey");
-const ethUtil = require("ethereumjs-util");
+const ecc = require("tiny-secp256k1");
+const { BIP32Factory } = require("bip32");
+const bip32 = BIP32Factory(ecc);
 
-const generateAddressFromPublicKey = (publicKey) => {
-  const result = ethUtil
-    .publicToAddress(Buffer.from(publicKey, "hex"), true)
-    .toString("hex");
-  const address = ethUtil.toChecksumAddress(`0x${result}`);
-  return address;
-};
-
-// const generateAddressFromPrivateKey = (privateKey) => {
-//   const pubKey = ethUtil.privateToPublic(Buffer.from(privateKey, "hex"));
-//   const result = ethUtil.publicToAddress(pubKey).toString("hex");
-//   const address = ethUtil.toChecksumAddress(`0x${result}`);
-
-//   return address;
-// };
+const generateETHAddressFromPublicKey = require("./addresses/generateETHAddressFromPublicKey");
 
 module.exports = (seed) => {
   // Get node root (bip32)
-  const root = Hdkey.fromMasterSeed(Buffer.from(seed, "hex"));
+  const root = bip32.fromSeed(Buffer.from(seed, "hex")); // (master key)
 
   // Derive address node
   const path = "m/44'/60'/0'/0/0"; // m / purpose' / coin_type' / account' / change / address_index
-  const ethAddressNode = root.derive(path);
+  const ethAddressNode = root.derivePath(path);
 
   const publicKey = ethAddressNode.publicKey.toString("hex");
   const privateKey = ethAddressNode.privateKey.toString("hex");
 
-  const address = generateAddressFromPublicKey(publicKey);
-  // const address = generateAddressFromPrivateKey(privateKey);
+  const address = generateETHAddressFromPublicKey(publicKey);
 
   console.log(`Public Key: ${publicKey}`);
   console.log(`Address: ${address}`);
